@@ -1,0 +1,65 @@
+/*
+ * Udemy Player Auto-Hide
+ *
+ * Strategy: We add .uphide-controls-hidden to the player container.
+ * All hiding is driven from that single class via CSS so we don't
+ * fight Udemy's own JS toggling inline styles.
+ */
+
+/* Smooth transition on the control bar and any interactive overlay.
+   We target children of the video container rather than specific class names
+   since Udemy's classes are hashed and change between builds. */
+
+/* The player container gets a cursor transition */
+[data-purpose="video-player-container"],
+[data-purpose="curriculum-item-viewer"] video,
+.udemy-player-autohide-scope {
+  transition: cursor 0s;
+}
+
+/* When our hidden class is active: hide cursor over the player area */
+.uphide-controls-hidden,
+.uphide-controls-hidden * {
+  cursor: none !important;
+}
+
+/* Control bar: the bar sitting below/over the video.
+   Udemy wraps controls in a container that is a sibling or descendant near <video>.
+   We target it by being a direct-or-nested child of our scoped container that
+   is NOT the <video> element itself, using the progress bar / control bar
+   data-purpose attributes when available. */
+
+/* Transition for all potential control-bar elements */
+.uphide-controls-hidden [class*="control-bar"],
+.uphide-controls-hidden [data-purpose="video-controls"],
+.uphide-controls-hidden [data-purpose="video-control-bar"],
+.uphide-controls-hidden .udemy-autohide-target {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.35s ease !important;
+}
+
+/* When controls are visible (class removed), ensure smooth fade-in */
+[class*="control-bar"],
+[data-purpose="video-controls"],
+[data-purpose="video-control-bar"],
+.udemy-autohide-target {
+  transition: opacity 0.35s ease !important;
+}
+
+/* Generic fallback: any absolutely/fixed positioned child of the player
+   that overlaps the bottom region (Udemy's control bars are positioned this way).
+   We tag these from JS with .udemy-autohide-target so CSS can drive them. */
+.uphide-controls-hidden .udemy-autohide-target {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.35s ease !important;
+}
+
+/* Body-level idle driver for elements outside the player container
+   (e.g. prev/next lecture arrows). */
+body.uphide-idle .udemy-autohide-target {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.35s ease !important;
+}
