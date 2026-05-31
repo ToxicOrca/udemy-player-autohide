@@ -52,6 +52,9 @@ If the control bar isn't hiding, Udemy may have changed their DOM structure. Ope
 | `.gitignore` | Ignored files for git |
 | `LICENSE` | MIT License |
 
+## Credits
+
+Built by [ToxicOrca](https://github.com/ToxicOrca) with development help from Anthropic's [Claude](https://claude.ai), including Claude Code for the source files.
 ## License
 
 [MIT](LICENSE)
