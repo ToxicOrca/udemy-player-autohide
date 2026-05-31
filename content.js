@@ -60,13 +60,18 @@
       return;
     }
 
-    // Fallback heuristics if data-purpose element isn't found
-    const candidates = container.querySelectorAll("div, section, nav, footer");
-    const containerRect = container.getBoundingClientRect();
-    const bottomThreshold = containerRect.bottom - 80;
+    // Fallback heuristics — only run inside the shaka player to avoid over-matching
+    const scope =
+      container.closest('[data-purpose="shaka-video-player"]') ||
+      container.querySelector('[data-purpose="shaka-video-player"]') ||
+      container;
+    const candidates = scope.querySelectorAll("div, section, nav, footer");
+    const scopeRect = scope.getBoundingClientRect();
+    const bottomThreshold = scopeRect.bottom - 80;
 
     candidates.forEach((el) => {
-      if (el.contains(container.querySelector("video"))) return;
+      if (el === scope || el === document.body) return;
+      if (el.contains(scope.querySelector("video"))) return;
       if (el.classList.contains(TARGET_CLASS)) return;
 
       const style = getComputedStyle(el);
@@ -75,16 +80,16 @@
       const rect = el.getBoundingClientRect();
       if (
         rect.bottom >= bottomThreshold &&
-        rect.width > containerRect.width * 0.5
+        rect.width > scopeRect.width * 0.5
       ) {
         el.classList.add(TARGET_CLASS);
       }
     });
 
-    container
+    scope
       .querySelectorAll('[class*="control-bar"]')
       .forEach((el) => {
-        if (!el.contains(container.querySelector("video"))) {
+        if (!el.contains(scope.querySelector("video"))) {
           el.classList.add(TARGET_CLASS);
         }
       });
@@ -214,8 +219,8 @@
     tagNavArrows();
     tagTitleOverlay();
 
-    playerContainer.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mousemove", onMouseMove);
+    playerContainer.addEventListener("mousemove", onMouseMove, { passive: true });
+    document.addEventListener("mousemove", onMouseMove, { passive: true });
     video.addEventListener("play", onVideoPlay);
     video.addEventListener("playing", onVideoPlay);
     video.addEventListener("pause", onVideoPause);

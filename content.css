@@ -23,6 +23,13 @@
   cursor: none !important;
 }
 
+/* Prevent click-through text selection when controls are hidden.
+   Scoped to the player only — transcript/notes remain selectable. */
+[data-purpose="shaka-video-player"],
+[data-purpose="shaka-video-player"] * {
+  user-select: none !important;
+}
+
 /* Control bar: the bar sitting below/over the video.
    Udemy wraps controls in a container that is a sibling or descendant near <video>.
    We target it by being a direct-or-nested child of our scoped container that
